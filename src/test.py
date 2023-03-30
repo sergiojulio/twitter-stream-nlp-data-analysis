@@ -8,7 +8,7 @@ import json
 import datetime
 import struct
 
-dotenv_path = Path('.venv')
+dotenv_path = Path('/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/.venv')
 load_dotenv(dotenv_path=dotenv_path)
 
 
