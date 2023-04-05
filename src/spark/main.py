@@ -8,7 +8,6 @@ spark = SparkSession \
     .getOrCreate()
 
 
-
 # Subscribe to 1 topic
 df = spark \
   .readStream \
@@ -17,8 +16,6 @@ df = spark \
   .option("subscribe", "trump") \
   .load()
 df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
-
-
 
 
 # Split the lines into words
@@ -30,7 +27,6 @@ words = df.select(
 
 # Generate running word count
 wordCounts = words.groupBy("word").count()
-
 
  # Start running the query that prints the running counts to the console
 query = wordCounts \
