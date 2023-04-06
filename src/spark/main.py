@@ -18,21 +18,6 @@ df = spark \
 df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
 
 
-# Split the lines into words
-words = df.select(
-   explode(
-       split(df.value, " ")
-   ).alias("word")
-)
 
-# Generate running word count
-wordCounts = words.groupBy("word").count()
-
- # Start running the query that prints the running counts to the console
-query = wordCounts \
-    .writeStream \
-    .outputMode("complete") \
-    .format("console") \
-    .start()
 
 query.awaitTermination()
