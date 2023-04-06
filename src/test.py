@@ -36,7 +36,7 @@ class TweetPrinterV2(tweepy.StreamingClient):
             key_bytes = bytes(now)
             text = data['data']['text']
             value_bytes = bytes(text, encoding='utf-8')
-            kafka_producer.send('trump', value=value_bytes)
+            kafka_producer.send(topic_name, value=value_bytes)
             # kafka_producer.send(topic_name, key=key_bytes, value=value_bytes)
             # kafka_producer.flush()
             print('Message published successfully.')
@@ -56,6 +56,10 @@ class TweetPrinterV2(tweepy.StreamingClient):
 bearer_token = os.getenv('BEARER_TOKEN')
 
 printer = TweetPrinterV2(bearer_token)
-rule = StreamRule(value="#saime")
-printer.add_rules(rule)
+# rule = StreamRule(value="#saime")
+
+# printer.delete_rules([1621632259072589826,1633107042939420679,1633249665800912898,1639629972041093122])
+# print(printer.get_rules())
+
+#printer.add_rules(rule)
 printer.filter()
