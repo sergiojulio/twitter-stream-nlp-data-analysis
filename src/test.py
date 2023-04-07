@@ -56,10 +56,10 @@ class TweetPrinterV2(tweepy.StreamingClient):
 bearer_token = os.getenv('BEARER_TOKEN')
 
 printer = TweetPrinterV2(bearer_token)
-# rule = StreamRule(value="#saime")
+rule = StreamRule(value="Esequibo")
 
 # printer.delete_rules([1621632259072589826,1633107042939420679,1633249665800912898,1639629972041093122])
 # print(printer.get_rules())
 
-#printer.add_rules(rule)
+printer.add_rules(rule)
 printer.filter()
