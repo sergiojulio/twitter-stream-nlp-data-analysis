@@ -26,14 +26,14 @@ dsraw.printSchema()
 ds = dsraw.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
 
 
-
+"""
 
 kafka_df \
     .withWatermark("timestamp", "5 seconds") \
     .groupBy(window(kafka_df.timestamp, "5 seconds", "1 second"),kafka_df.value) 
 
 
-"""
+
 rawQuery = ds \
         .writeStream \
         .queryName("qraw")\
