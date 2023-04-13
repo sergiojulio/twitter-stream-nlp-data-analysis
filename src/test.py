@@ -78,4 +78,26 @@ printer = TweetPrinterV2(bearer_token)
 
 # print(printer.get_rules())
 
-printer.filter()
+"""
+client.filter(
+expansions="attachments.poll_ids,attachments.media_keys,author_id,geo.place_id,in_reply_to_user_id,referenced_tweets.id,entities.mentions.username,referenced_tweets.id.author_id",
+tweet_fields="attachments,author_id,context_annotations,conversation_id,created_at,entities,geo,id,in_reply_to_user_id,lang,possibly_sensitive,public_metrics,referenced_tweets,reply_settings,source,text,withheld,edit_history_tweet_ids,edit_controls",
+poll_fields="duration_minutes,end_datetime,id,options,voting_status",
+place_fields="contained_within,country,country_code,full_name,geo,id,name,place_type",
+user_fields="created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld",
+media_fields="duration_ms,height,media_key,preview_image_url,public_metrics,type,url,width"
+)
+"""
+
+"""
+--------------------------------------------------
+Message published successfully.
+{'data': {'created_at': '2023-04-13T12:53:59.000Z', 'edit_history_tweet_ids': ['1646496954824953856'], 
+'geo': {}, 'id': '1646496954824953856', 'lang': 'en', 
+'text': 'RT @TheoHernandez: Good team effort ✅ This is @acmilan!!! 🔴⚫ #UCL #SempreMilan https://t.co/to30yHc7X8'}, 
+'matching_rules': [{'id': '1645922914762407937', 'tag': ''}]}
+--------------------------------------------------
+"""
+
+
+printer.filter(tweet_fields="created_at,geo,id,lang,text")
