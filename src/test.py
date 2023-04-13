@@ -14,7 +14,10 @@ load_dotenv(dotenv_path=dotenv_path)
 
 
 
-kafka_producer = KafkaProducer(bootstrap_servers='localhost:9092', value_serializer=msgpack.dumps)
+kafka_producer = KafkaProducer(
+                    bootstrap_servers='localhost:9092', 
+                    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+                )
 
 class TweetPrinterV2(tweepy.StreamingClient):
     """
@@ -36,10 +39,10 @@ class TweetPrinterV2(tweepy.StreamingClient):
             now = int(now.timestamp())
             # key_bytes = bytes(now)
             text = data['data']['text']
-            value_bytes = bytes(','.join([str(now), text]), encoding='utf-8')
+            # value_bytes = bytes(','.join([str(now), text]), encoding='utf-8')
             #kafka_producer.send(topic_name, key=now, value=value_bytes)
-            # kafka_producer.send(topic_name, {'time': now, 'text': text})
-            kafka_producer.send(topic_name, value=value_bytes)
+            kafka_producer.send(topic_name, value={'time': now, 'text': text})
+            ##kafka_producer.send(topic_name, value=value_bytes)
             # kafka_producer.flush()
             print('Message published successfully.')
         except Exception as ex:
@@ -47,7 +50,8 @@ class TweetPrinterV2(tweepy.StreamingClient):
         
 
 
-        print(','.join([str(now), text]))
+        #print(','.join([str(now), text]))
+        print(data)
         print("-"*50)
         return True    
     
@@ -60,7 +64,7 @@ bearer_token = os.getenv('BEARER_TOKEN')
 printer = TweetPrinterV2(bearer_token)
 # rule = StreamRule(value="Bayern")
 
-# printer.delete_rules([1645923451603918853])
+#printer.delete_rules([1645954123081105413])
 
 
 
@@ -72,6 +76,6 @@ printer = TweetPrinterV2(bearer_token)
 
 #printer.add_rules(rule)
 
-#print(printer.get_rules())
+# print(printer.get_rules())
 
 printer.filter()

@@ -3,19 +3,9 @@ from pyspark.sql.functions import explode
 from pyspark.sql.functions import split
 from pyspark.sql.functions import window
 from pyspark.sql.types import *
+import pyspark.sql.functions as F
 
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.0,org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 pyspark-shell'
-
-
-def parse_data_from_kafka_message(sdf, schema):
-    from pyspark.sql.functions import split
-    assert sdf.isStreaming == True, "DataFrame doesn't receive treaming data"
-    print(sdf['value'])
-    col = split(sdf['value'], ',') #split attributes to nested array in one Column
-    #now expand col to multiple top-level columns
-    for idx, field in enumerate(schema): 
-        sdf = sdf.withColumn(field.name, col.getItem(idx).cast(field.dataType))
-    return sdf.select([field.name for field in schema])
 
 spark = SparkSession \
     .builder \
@@ -24,89 +14,31 @@ spark = SparkSession \
 
 spark.sparkContext.setLogLevel("ERROR")
 
-
-# Subscribe to 1 topic
-dsraw = spark \
+streamdf = spark \
   .readStream \
   .format("kafka") \
   .option("kafka.bootstrap.servers", "localhost:9092") \
   .option("subscribe", "trump") \
-  .load() \
-  .selectExpr("CAST(value AS STRING)")
+  .load() 
 
+streamdf.printSchema()
 
+schema = StructType([
+    StructField("time", TimestampType()),
+    StructField("text", StringType())
+])
 
-"""
-root
- |-- key: binary (nullable = true)
- |-- value: binary (nullable = true)
- |-- topic: string (nullable = true)
- |-- partition: integer (nullable = true)
- |-- offset: long (nullable = true)
- |-- timestamp: timestamp (nullable = true)
- |-- timestampType: integer (nullable = true)
+streamdf = streamdf.selectExpr("CAST(value AS STRING)") \
+          .select(F.from_json("value", schema=schema).alias("data")) \
+          .select("data.*") 
+          
+# windowed_df = streamdf.groupBy(window("time", "10 seconds")).show()     
 
-"""
-
-schema = StructType([ \
-    StructField("time", LongType()), StructField("time", TimestampType()), \
-    StructField("text", StringType()), StructField("text", StringType())  ])
-
-dsraw = parse_data_from_kafka_message(dsraw, schema)
-
-ds = dsraw.withWatermark("time", "10 seconds") \
-          .groupBy(window(dsraw.time, "10 seconds")) 
-
-dsraw.printSchema()
-
-"""
-
-kafka_df \
-    .withWatermark("timestamp", "5 seconds") \
-    .groupBy(window(kafka_df.timestamp, "5 seconds", "1 second"),kafka_df.value) 
-
-    Silver = (Bronze 
-    .withWatermark("TimeStamp", "1 minute")
-    .groupBy(['sensor_id', F.window('TimeStamp', '1 minute')])
-)
-
-
-
-
-rawQuery = ds \
-        .writeStream \
-        .queryName("qraw")\
-        .format("memory")\
-        .start()
-
-raw = spark.sql("select * from qraw")
-raw.show()
-rawQuery.awaitTermination()
-"""
-dsraw.writeStream  \
+streamdf.writeStream  \
       .format("console")  \
       .outputMode("append")  \
-      .start()  \
+      .option("checkpointLocation", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/") \
+      .trigger(continuous='5 seconds') \
+      .start() \
       .awaitTermination()  
 
-"""
--------------------------------------------
-Batch: 20
--------------------------------------------
-+----+--------------------+
-| key|               value|
-+----+--------------------+
-|null|RT @AlfredoARamos...|
-|null|RT @DonGochoK: Mu...|
-+----+--------------------+
-
--------------------------------------------
-Batch: 21
--------------------------------------------
-+----+--------------------+
-| key|               value|
-+----+--------------------+
-|null|@monitoreamos Esa...|
-+----+--------------------+
-
-"""
