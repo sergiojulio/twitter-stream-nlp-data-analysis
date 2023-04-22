@@ -32,7 +32,7 @@ streamdf = streamdf.selectExpr("CAST(value AS STRING)") \
           .select(F.from_json("value", schema=schema).alias("data")) \
           .select("data.*") 
           
-# windowed_df = streamdf.groupBy(window("time", "10 seconds")).show()     
+# apply NLP function to column   
 
 streamdf.writeStream  \
       .format("console")  \
