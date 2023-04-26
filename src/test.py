@@ -30,7 +30,6 @@ class TweetPrinterV2(tweepy.StreamingClient):
 
     def on_data(self, data):
         # kafka_producer.send("trump", data['text']).get(timeout=1000)
-
         data = json.loads(data)
         
         try:
@@ -48,8 +47,6 @@ class TweetPrinterV2(tweepy.StreamingClient):
         except Exception as ex:
             print(str(ex))
         
-
-
         #print(','.join([str(now), text]))
         print(data)
         print("-"*50)
