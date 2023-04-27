@@ -28,17 +28,39 @@ schema = StructType([
     StructField("text", StringType())
 ])
 
+"""
+
+aa = df_query \
+    .writeStream \
+    .format("csv")\
+    .option("format", "append")\
+    .trigger(processingTime = "5 seconds")\
+    .option("path", "/var/kafka_stream_test_out/")\
+    .option("checkpointLocation", "/user/kafka_stream_test_out/chk") \
+    .outputMode("append") \
+    .start()
+
+    
+df.coalesce(1).write.save(path='csv', format='csv', mode='append', sep='\t') its handle folder partitions
+
+"""
+
+
 streamdf = streamdf.selectExpr("CAST(value AS STRING)") \
           .select(F.from_json("value", schema=schema).alias("data")) \
           .select("data.*") 
           
-# apply NLP function to column   
+#.option("checkpointLocation", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/") \
 
 streamdf.writeStream  \
       .format("console")  \
       .outputMode("append")  \
-      .option("checkpointLocation", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/") \
       .trigger(continuous='5 seconds') \
       .start() \
       .awaitTermination()  
+
+# apply NLP function to column  
+
+# output dataframe into csv
+streamdf.write.save(path='/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/dataframe.csv', format='csv', mode='append', sep='\t')
 

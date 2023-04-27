@@ -59,21 +59,18 @@ class TweetPrinterV2(tweepy.StreamingClient):
 bearer_token = os.getenv('BEARER_TOKEN')
 
 printer = TweetPrinterV2(bearer_token)
-# rule = StreamRule(value="Bayern")
 
-#printer.delete_rules([1645954123081105413])
+#rule = StreamRule(value="girona")
 
-
+#printer.delete_rules([1645922914762407937])
 
 """
 {'edit_history_tweet_ids': ['1645940261066018817'], 'id': '1645940261066018817', 'text': '🏆 UEFA Champions League • Quarter-final • 1st Leg⚽️\n\n🆚 AC Milan v Napoli\n⏰ Wed, Apr 12, 21:00 🇮🇹\n\n▶️ Live Stream 🔴\n\n#UCL #SerieA #ChampionsLeague #MILNAP #Italy #Napoli #UEFA #ACMilan #MilanNapoli https://t.co/wiolyWypgk'}
 """
 
-
-
 #printer.add_rules(rule)
 
-# print(printer.get_rules())
+#print(printer.get_rules())
 
 """
 client.filter(
@@ -84,9 +81,7 @@ place_fields="contained_within,country,country_code,full_name,geo,id,name,place_
 user_fields="created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld",
 media_fields="duration_ms,height,media_key,preview_image_url,public_metrics,type,url,width"
 )
-"""
 
-"""
 --------------------------------------------------
 Message published successfully.
 {'data': {'created_at': '2023-04-13T12:53:59.000Z', 'edit_history_tweet_ids': ['1646496954824953856'], 
@@ -95,6 +90,5 @@ Message published successfully.
 'matching_rules': [{'id': '1645922914762407937', 'tag': ''}]}
 --------------------------------------------------
 """
-
 
 printer.filter(tweet_fields="created_at,geo,id,lang,text")
