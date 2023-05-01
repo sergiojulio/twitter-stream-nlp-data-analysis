@@ -48,19 +48,27 @@ df.coalesce(1).write.save(path='csv', format='csv', mode='append', sep='\t') its
 
 streamdf = streamdf.selectExpr("CAST(value AS STRING)") \
           .select(F.from_json("value", schema=schema).alias("data")) \
-          .select("data.*") 
-          
+          .select("data.*") \
+          .withColumn("newlyCalculatedColumnName", F.lit("npl"))
+
+       
 #.option("checkpointLocation", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/") \
 
+# streamdf..coalesce(1).write.save(path='/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/dataframe.csv', format='csv', mode='append', sep='\t')
+
+def write_to_mysql(df, epoch_id):
+    df.show()
+    print('hi')
+    pass
+
 streamdf.writeStream  \
-      .format("console")  \
-      .outputMode("append")  \
-      .trigger(continuous='5 seconds') \
-      .start() \
-      .awaitTermination()  
+    .format("console")  \
+    .outputMode("append")  \
+    .foreachBatch(write_to_mysql) \
+    .start() \
+    .awaitTermination()
 
-# apply NLP function to column  
 
-# output dataframe into csv
-streamdf.write.save(path='/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/dataframe.csv', format='csv', mode='append', sep='\t')
+
+
 
