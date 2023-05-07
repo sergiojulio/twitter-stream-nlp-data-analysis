@@ -31,25 +31,28 @@ class TweetPrinterV2(tweepy.StreamingClient):
     def on_data(self, data):
         # kafka_producer.send("trump", data['text']).get(timeout=1000)
         data = json.loads(data)
-        
-        try:
-            topic_name = "trump"
-            now = datetime.datetime.utcnow()
-            now = int(now.timestamp())
-            # key_bytes = bytes(now)
-            text = data['data']['text']
-            # value_bytes = bytes(','.join([str(now), text]), encoding='utf-8')
-            #kafka_producer.send(topic_name, key=now, value=value_bytes)
-            kafka_producer.send(topic_name, value={'time': now, 'text': text})
-            ##kafka_producer.send(topic_name, value=value_bytes)
-            # kafka_producer.flush()
-            print('Message published successfully.')
-        except Exception as ex:
-            print(str(ex))
-        
-        #print(','.join([str(now), text]))
-        print(data)
-        print("-"*50)
+
+        # lang filter here
+        if data['data']['lang'] == 'en':
+            try:
+                topic_name = "trump"
+                now = datetime.datetime.utcnow()
+                now = int(now.timestamp())
+                # key_bytes = bytes(now)
+                text = data['data']['text']
+                # value_bytes = bytes(','.join([str(now), text]), encoding='utf-8')
+                #kafka_producer.send(topic_name, key=now, value=value_bytes)
+                kafka_producer.send(topic_name, value={'time': now, 'text': text})
+                ##kafka_producer.send(topic_name, value=value_bytes)
+                # kafka_producer.flush()
+                print('Message published successfully.')
+            except Exception as ex:
+                print(str(ex))
+            
+            #print(','.join([str(now), text]))
+            print(data)
+            print("-"*50)
+
         return True    
     
     def on_error(self, status):
@@ -60,9 +63,9 @@ bearer_token = os.getenv('BEARER_TOKEN')
 
 printer = TweetPrinterV2(bearer_token)
 
-#rule = StreamRule(value="girona")
+#rule = StreamRule(value="Brimsley")
 
-#printer.delete_rules([1645922914762407937])
+#printer.delete_rules([1651214857109229568])
 
 """
 {'edit_history_tweet_ids': ['1645940261066018817'], 'id': '1645940261066018817', 'text': '🏆 UEFA Champions League • Quarter-final • 1st Leg⚽️\n\n🆚 AC Milan v Napoli\n⏰ Wed, Apr 12, 21:00 🇮🇹\n\n▶️ Live Stream 🔴\n\n#UCL #SerieA #ChampionsLeague #MILNAP #Italy #Napoli #UEFA #ACMilan #MilanNapoli https://t.co/wiolyWypgk'}

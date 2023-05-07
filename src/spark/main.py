@@ -8,6 +8,26 @@ from pyspark.sql.functions import udf
 import time
 import re
 
+import numpy as np
+from textblob import TextBlob
+
+def clean_tweet(tweet):
+    stopwords = ["for", "on", "an", "a", "of", "and", "in", "the", "to", "from"]
+    temp = tweet.lower()
+    temp = re.sub("'", "", temp) # to avoid removing contractions in english
+    temp = re.sub("@[A-Za-z0-9_]+","", temp)
+    temp = re.sub("#[A-Za-z0-9_]+","", temp)
+    temp = re.sub(r'http\S+', '', temp)
+    temp = re.sub('[()!?]', ' ', temp)
+    temp = re.sub('\[.*?\]',' ', temp)
+    temp = re.sub("[^a-z0-9]"," ", temp)
+    temp = temp.split()
+    temp = [w for w in temp if not w in stopwords]
+    temp = " ".join(word for word in temp)
+    return temp
+
+
+
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.0,org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 pyspark-shell'
 
 
@@ -17,8 +37,22 @@ def write_to_mysql(df, epoch_id):
     pass
 
 
-def myFunction(num):
-    return num
+def myFunction(string):
+
+    blob = TextBlob(clean_tweet(string))
+
+    p = 0
+    c = 0
+    i = 0
+    for sentence in blob.sentences:
+        print(sentence.sentiment.polarity)
+        c = sentence.sentiment.polarity  + c
+        i += 1
+
+    p = c / i
+    p = round(p,2)
+
+    return p
 
 
 def clean_text(sentence):
@@ -35,8 +69,9 @@ if __name__ == "__main__":
     print("Stream Data Processing Starting ...")
     print(time.strftime("%Y-%m-%d %H:%M:%S"))
 
+
     spark = SparkSession \
-        .builder \
+        .builder.config("spark.archives","/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/my_env.tar.gz#environment") \
         .appName("StructuredNetworkWordCount") \
         .master("local[*]") \
         .getOrCreate()
@@ -60,7 +95,7 @@ if __name__ == "__main__":
         StructField("text", StringType())
     ])
 
-    udf_myFunction = udf(myFunction, IntegerType()) # if the function returns an int
+    udf_myFunction = udf(myFunction, StringType()) # if the function returns an int
 
     streamdf = streamdf.selectExpr("CAST(value AS STRING)") \
             .select(F.from_json("value", schema=schema).alias("data")) \
