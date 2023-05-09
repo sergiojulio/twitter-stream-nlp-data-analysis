@@ -7,14 +7,13 @@ import pyspark.sql.functions as F
 from pyspark.sql.functions import udf
 import time
 import re
-
 import numpy as np
 from textblob import TextBlob
 
 def clean_tweet(tweet):
     stopwords = ["for", "on", "an", "a", "of", "and", "in", "the", "to", "from"]
     temp = tweet.lower()
-    temp = re.sub("'", "", temp) # to avoid removing contractions in english
+    temp = re.sub("'", "", temp) 
     temp = re.sub("@[A-Za-z0-9_]+","", temp)
     temp = re.sub("#[A-Za-z0-9_]+","", temp)
     temp = re.sub(r'http\S+', '', temp)
@@ -136,11 +135,4 @@ if __name__ == "__main__":
     spark.streams.awaitAnyTermination()
     
     print("Stream Processing Successfully Completed ! ! !")
-
-
-
-
-
-
-
 
