@@ -25,8 +25,6 @@ def clean_tweet(tweet):
     temp = " ".join(word for word in temp)
     return temp
 
-
-
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.0,org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 pyspark-shell'
 
 
