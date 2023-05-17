@@ -11,13 +11,17 @@ load_dotenv(dotenv_path=dotenv_path)
 
 app = FastAPI()
 
-
+# arg hashtag - lang
 @app.get("/")
 async def root():
     # init twitter
     bearer_token = os.getenv('BEARER_TOKEN')
     twitter = Twitterapi(bearer_token)
     # twitter.stream("saime")
+
+    # init kafka
+
+    # init twitter 
 
 
     # init kafka

@@ -2,20 +2,24 @@
 import tweepy
 from tweepy import StreamingClient, StreamRule
 import os
+import json
+import datetime
 
-
-# bearer_token = os.getenv('BEARER_TOKEN')
 
 class Twitterapi():
 
     def __init__(self, bearer_token):
         self.bearer_token = bearer_token
-        
 
+    # add hash tag
+        
+    # remove hash tag
+    """
     @staticmethod
     def on_tweet(self, tweet):
         print(f"{tweet.id} {tweet.created_at} ({tweet.author_id}): {tweet.text}")
         print("-"*50)
+    """
 
 
     @staticmethod
@@ -29,7 +33,31 @@ class Twitterapi():
     @staticmethod
     def test(hashtag):
         return hashtag
+    
 
-"""
-1621632802184728576 None (None): Oferta laboral: Python Backend Developer - Buscamos un Python Backend Developer para una reconocida Institución... https://t.co/qdfd0vvZTi
-"""
+    @staticmethod
+    def on_data(self, data):
+        
+        data = json.loads(data)
+        # lang filter here
+        if data['data']['lang'] == 'en':
+            try:
+                topic_name = "trump"
+                now = datetime.datetime.utcnow()
+                now = int(now.timestamp())
+                text = data['data']['text']
+                # if loaded
+                kafka_producer.send(topic_name, value={'time': now, 'text': text})
+                # 
+            except Exception as ex:
+                print(str(ex))
+            
+            print(data)
+            print("-"*50)
+
+        return True    
+    
+
+    @staticmethod
+    def on_error(self, status):
+        print(status)

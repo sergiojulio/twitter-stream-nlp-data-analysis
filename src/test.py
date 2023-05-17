@@ -67,10 +67,6 @@ printer = TweetPrinterV2(bearer_token)
 
 #printer.delete_rules([1651214857109229568])
 
-"""
-{'edit_history_tweet_ids': ['1645940261066018817'], 'id': '1645940261066018817', 'text': '🏆 UEFA Champions League • Quarter-final • 1st Leg⚽️\n\n🆚 AC Milan v Napoli\n⏰ Wed, Apr 12, 21:00 🇮🇹\n\n▶️ Live Stream 🔴\n\n#UCL #SerieA #ChampionsLeague #MILNAP #Italy #Napoli #UEFA #ACMilan #MilanNapoli https://t.co/wiolyWypgk'}
-"""
-
 #printer.add_rules(rule)
 
 #print(printer.get_rules())
