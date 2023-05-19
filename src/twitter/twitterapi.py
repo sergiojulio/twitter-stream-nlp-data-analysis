@@ -1,15 +1,14 @@
 # https://improveandrepeat.com/2022/04/python-friday-117-streaming-search-results-with-tweepy/
 import tweepy
 from tweepy import StreamingClient, StreamRule
-import os
 import json
 import datetime
 
 
-class Twitterapi():
+class Twitterapi(tweepy.StreamingClient):
 
-    def __init__(self, bearer_token):
-        self.bearer_token = bearer_token
+    def __init__(self, kafka_producer):
+        kafka_producer = self.kafka_producer
 
     # add hash tag
         
@@ -22,22 +21,26 @@ class Twitterapi():
     """
 
 
-    @staticmethod
     def stream(self, hashtag):
-        printer = tweepy.StreamingClient(self.bearer_token) 
-        rule = StreamRule(value=hashtag)
-        printer.add_rules(rule)
-        printer.filter()
-
+        
+        # rule = StreamRule(value=hashtag)
+        x = hashtag
+        # printer.add_rules(rule)
+        print(self.get_rules())
+        print("hello")
+        self.filter(tweet_fields="created_at,geo,id,lang,text")
+        
+    
 
     @staticmethod
     def test(hashtag):
         return hashtag
     
 
-    @staticmethod
     def on_data(self, data):
         
+        # kafka_producer = self.kafka_producer
+
         data = json.loads(data)
         # lang filter here
         if data['data']['lang'] == 'en':
@@ -47,7 +50,7 @@ class Twitterapi():
                 now = int(now.timestamp())
                 text = data['data']['text']
                 # if loaded
-                kafka_producer.send(topic_name, value={'time': now, 'text': text})
+                # kafka_producer.send(topic_name, value={'time': now, 'text': text})
                 # 
             except Exception as ex:
                 print(str(ex))
@@ -58,6 +61,5 @@ class Twitterapi():
         return True    
     
 
-    @staticmethod
     def on_error(self, status):
         print(status)
