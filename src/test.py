@@ -63,13 +63,13 @@ bearer_token = os.getenv('BEARER_TOKEN')
 
 printer = TweetPrinterV2(bearer_token)
 
-#rule = StreamRule(value="Brimsley")
+#printer.delete_rules([1659153209892429824])
 
-#printer.delete_rules([1651214857109229568])
+#printer.add_rules(StreamRule(value="Madrid"))
 
-#printer.add_rules(rule)
+print(printer.get_rules())
 
-#print(printer.get_rules())
+printer.filter(tweet_fields="created_at,geo,id,lang,text")
 
 """
 client.filter(
@@ -90,4 +90,4 @@ Message published successfully.
 --------------------------------------------------
 """
 
-printer.filter(tweet_fields="created_at,geo,id,lang,text")
+
