@@ -1,15 +1,15 @@
 version: "1"
 
 services:
-  app:
-    build: .
-    container_name: python-server
-    command: uvicorn src.main:app --host 0.0.0.0 --port 8080 --reload
-    ports:
-      - 8080:8080
-      - 5678:5678
-    volumes:
-      - .:/code
+  #app:
+  #  build: .
+  #  container_name: python-server
+  #  command: uvicorn src.main:app --host 0.0.0.0 --port 8080 --reload
+  #  ports:
+  #    - 8080:8080
+  #    - 5678:5678
+  #  volumes:
+  #    - .:/code
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
     ports:

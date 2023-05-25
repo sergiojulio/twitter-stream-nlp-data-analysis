@@ -28,10 +28,10 @@ async def root():
                 )   
     
     # init twitter 
-    printer = Twitterapi(bearer_token, kafka_producer)
+    printer = Twitterapi(bearer_token)
 
     # init streaming 
-    printer.stream("saime")
+    printer.stream("saime", kafka_producer)
     
     # printer.filter(tweet_fields="created_at,geo,id,lang,text")
 

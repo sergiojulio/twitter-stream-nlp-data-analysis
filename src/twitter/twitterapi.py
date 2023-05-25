@@ -7,8 +7,10 @@ import datetime
 
 class Twitterapi(tweepy.StreamingClient):
 
-    def __init__(self, kafka_producer):
-        kafka_producer = self.kafka_producer
+    kafka_producer = ''
+
+    #def __init__(self, kafka_producer):
+    #    kafka_producer = self.kafka_producer
 
     # add hash tag
         
@@ -21,7 +23,9 @@ class Twitterapi(tweepy.StreamingClient):
     """
 
 
-    def stream(self, hashtag):
+    def stream(self, hashtag, kafka_producer):
+
+        self.kafka_producer = kafka_producer
         
         # rule = StreamRule(value=hashtag)
         x = hashtag
@@ -39,7 +43,7 @@ class Twitterapi(tweepy.StreamingClient):
 
     def on_data(self, data):
         
-        # kafka_producer = self.kafka_producer
+        
 
         data = json.loads(data)
         # lang filter here
@@ -50,8 +54,9 @@ class Twitterapi(tweepy.StreamingClient):
                 now = int(now.timestamp())
                 text = data['data']['text']
                 # if loaded
-                # kafka_producer.send(topic_name, value={'time': now, 'text': text})
+                self.kafka_producer.send(topic_name, value={'time': now, 'text': text})
                 # 
+                print('succefully sent to brokers')
             except Exception as ex:
                 print(str(ex))
             
