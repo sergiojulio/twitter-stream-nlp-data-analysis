@@ -34,8 +34,6 @@ async def root():
     printer.stream("saime", kafka_producer)
     
     # printer.filter(tweet_fields="created_at,geo,id,lang,text")
-
-
     # printer = TweetPrinterV2(bearer_token)
     # print(printer.get_rules())
     # printer.filter(tweet_fields="created_at,geo,id,lang,text")
