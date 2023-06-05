@@ -46,7 +46,8 @@ services:
       - '8080:8080'
   spark-worker:
     # install python modules command: ?
-    image: docker.io/bitnami/spark:3.2
+    build: .
+    # image: docker.io/bitnami/spark:3.2
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077
