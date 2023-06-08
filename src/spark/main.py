@@ -68,7 +68,6 @@ if __name__ == "__main__":
 
 
     spark = SparkSession \
-        .builder.config("spark.archives","/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/my_env.tar.gz#environment") \
         .appName("StructuredNetworkWordCount") \
         .master("local[*]") \
         .getOrCreate()
@@ -101,15 +100,15 @@ if __name__ == "__main__":
 
     # output
 
-    csv_output = streamdf \
-        .writeStream \
-        .format("csv")\
-        .option("format", "append")\
-        .trigger(processingTime = "5 seconds")\
-        .option("path", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/csv")\
-        .option("checkpointLocation", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/checkpoint") \
-        .outputMode("append") \
-        .start()
+    # csv_output = streamdf \
+    #     .writeStream \
+    #     .format("csv")\
+    #     .option("format", "append")\
+    #     .trigger(processingTime = "5 seconds")\
+    #     .option("path", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/csv")\
+    #     .option("checkpointLocation", "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/kafka/checkpoint") \
+    #     .outputMode("append") \
+    #     .start()
     
     # spark.read.csv("oldLocation").coalesce(1).write.csv("newLocation")
 
