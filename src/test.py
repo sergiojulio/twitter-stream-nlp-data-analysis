@@ -69,7 +69,7 @@ printer = TweetPrinterV2(bearer_token)
 
 print(printer.get_rules())
 
-printer.filter(tweet_fields="created_at,geo,id,lang,text")
+#printer.filter(tweet_fields="created_at,geo,id,lang,text")
 
 """
 client.filter(
