@@ -1,4 +1,4 @@
-version: "2.3"
+version: "3.1"
 
 services:
   #app:
@@ -58,9 +58,20 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
   zookeeper_data:
     driver: local
   kafka_data:
     driver: local
+  postgres-data:

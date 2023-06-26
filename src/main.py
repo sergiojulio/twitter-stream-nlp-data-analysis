@@ -29,9 +29,7 @@ async def root():
                     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                 )   
     """ 
-    producer = KafkaProducer(
-                bootstrap_servers='localhost:9092'
-            )  
+    producer = KafkaProducer(bootstrap_servers='localhost:9092')  
     
 
     # with open csv
@@ -51,26 +49,25 @@ async def root():
             values = line.split(divider_char)
             len_header = len(header)
             for i in range(len_header):
-                data_to_send += "\""+header[i].strip()+"\""+":"+"\""+values[i].strip()+"\""
-                if i<len_header-1 :
-                    data_to_send += ","
+
+                try:
+                    data_to_send += "\""+header[i].strip()+"\""+":"+"\""+values[i].strip()+"\""
+                    if i<len_header-1 :
+                        data_to_send += ","
+                except IndexError:
+                    pass    
+
             data_to_send = "{"+data_to_send+"}"
 
-            '''
-            example of outputs is valid JSON row 
-            {
-                "AT":"0.148251748251748",
-                "BE":"0.052603706790461",
-                    ...
-                "SE":"0.0826699344612236",
-                "UK":"0.10951678628072099"
-            }
-            '''
+            """
+            {"tweet_id":"570306133677760513","airline_sentiment":"neutral","airline_sentiment_confidence":"1.0","negativereason":"","negativereason_confidence":"","airline":"Virgin America","airline_sentiment_gold":"","name":"cairdin","negativereason_gold":"","retweet_count":"0","text":"@VirginAmerica What @dhepburn said.","tweet_coord":"","tweet_created":"2015-02-24 11:35:52 -0800","tweet_location":"","user_timezone":"Eastern Time (US & Canada)"}
+
+            """
 
             # send data via producer
             producer.send('trump', bytes(data_to_send, encoding='utf-8'))
             line = fp.readline()
-            # А это так))) на всякий случай
+            # 
             time.sleep(1)
 
     producer.close()
