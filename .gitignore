@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 src/nltk_data
+src/twitter/tweets.csv
