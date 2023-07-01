@@ -71,8 +71,6 @@ async def root():
             time.sleep(1)
 
     producer.close()
-
-
     # init twitter 
     # printer = Twitterapi(bearer_token)
     # 
