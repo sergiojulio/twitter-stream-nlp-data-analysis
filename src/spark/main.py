@@ -27,7 +27,6 @@ def clean_tweet(tweet):
 
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.0,org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 pyspark-shell'
 
-
 def write_to_mysql(df, epoch_id):
     df.show()
     print('hi')
