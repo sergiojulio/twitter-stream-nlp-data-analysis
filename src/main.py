@@ -40,7 +40,6 @@ async def root():
         # read header (first line of the input file)
         line = fp.readline()
         header = line.split(divider_char)
-
         #loop other data rows 
         line = fp.readline()    
         while line:
