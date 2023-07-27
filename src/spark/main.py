@@ -7,7 +7,6 @@ import pyspark.sql.functions as F
 from pyspark.sql.functions import udf
 import time
 import re
-import numpy as np
 from textblob import TextBlob
 
 def clean_tweet(tweet):
