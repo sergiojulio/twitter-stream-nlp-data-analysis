@@ -1,14 +1,12 @@
 # FROM apache/spark-py:v3.4.0
 FROM docker.io/bitnami/spark:3.2
 ARG spark_id=185
-
 # Installing nltk and required files
 USER root
 RUN pip install nltk
 RUN HOME=/usr/local/share/ python3 -m nltk.downloader vader_lexicon
 RUN chown -R ${spark_id}:${spark_id} /usr/local/share/
 USER ${spark_id}
-
 # HERE COPY 
 # WORKDIR /src
 # COPY . .
