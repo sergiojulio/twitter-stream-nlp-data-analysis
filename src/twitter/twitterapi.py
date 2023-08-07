@@ -11,9 +11,7 @@ class Twitterapi(tweepy.StreamingClient):
 
     #def __init__(self, kafka_producer):
     #    kafka_producer = self.kafka_producer
-
     # add hash tag
-        
     # remove hash tag
     """
     @staticmethod
