@@ -24,7 +24,6 @@ class Twitterapi(tweepy.StreamingClient):
     def stream(self, hashtag, kafka_producer):
 
         self.kafka_producer = kafka_producer
-        
         # rule = StreamRule(value=hashtag)
         x = hashtag
         # printer.add_rules(rule)
