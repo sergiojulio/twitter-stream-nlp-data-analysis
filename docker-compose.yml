@@ -34,6 +34,7 @@ services:
       - zookeeper
   spark:
     image: docker.io/bitnami/spark:3.2
+    build: .
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
@@ -43,20 +44,20 @@ services:
       - SPARK_USER=spark
     ports:
       - '8080:8080'
-  spark-worker:
-    # install python modules command: ?
-    build: .
-    # image: docker.io/bitnami/spark:3.2
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark:7077
-      - SPARK_WORKER_MEMORY=1G
-      - SPARK_WORKER_CORES=1
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
+  # spark-worker:
+  #   # install python modules command: ?
+  #   build: .
+  #   # image: docker.io/bitnami/spark:3.2
+  #   environment:
+  #     - SPARK_MODE=worker
+  #     - SPARK_MASTER_URL=spark://spark:7077
+  #     - SPARK_WORKER_MEMORY=1G
+  #     - SPARK_WORKER_CORES=1
+  #     - SPARK_RPC_AUTHENTICATION_ENABLED=no
+  #     - SPARK_RPC_ENCRYPTION_ENABLED=no
+  #     - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+  #     - SPARK_SSL_ENABLED=no
+  #     - SPARK_USER=spark
   db:
     image: postgres:14.1-alpine
     restart: always
@@ -67,10 +68,29 @@ services:
       - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
+# Grafana - Graphical data visualization
+  grafana:
+    image: grafana/grafana:8.2.6
+    container_name: grafana
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - "3000:3000"
+    user: $PUID
+    volumes:
+      #- $DOCKERDIR/appdata/grafana:/var/lib/grafana
+      - "grafana_data:/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/docker/"
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel,grafana-piechart-panel"
 
 volumes:
   zookeeper_data:
     driver: local
   kafka_data:
     driver: local
-  postgres-data:
+  grafana_data:
+    driver: local
+  postgres-data:  

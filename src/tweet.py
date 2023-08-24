@@ -20,7 +20,6 @@ def clean_tweet(tweet):
     return temp
 
 
-
 text = '''
 today es a beautiful day. I am full of love. I want make you happy
 '''
