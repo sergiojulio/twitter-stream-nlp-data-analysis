@@ -83,7 +83,6 @@ user_fields="created_at,description,entities,id,location,name,pinned_tweet_id,pr
 protected,public_metrics,url,username,verified,withheld",
 media_fields="duration_ms,height,media_key,preview_image_url,public_metrics,type,url,width"
 )
-
 --------------------------------------------------
 Message published successfully.
 {'data': {'created_at': '2023-04-13T12:53:59.000Z', 'edit_history_tweet_ids': ['1646496954824953856'], 

@@ -129,5 +129,5 @@ if __name__ == "__main__":
 
     spark.streams.awaitAnyTermination()
     
-    print("Stream Processing Successfully Completed ! ! !")
+    print("Stream Processing Successfully Completed")
 
