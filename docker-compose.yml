@@ -34,7 +34,7 @@ services:
       - zookeeper
   spark:
     image: docker.io/bitnami/spark:3.2
-    build: .
+    build: . # call Docker spark
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
