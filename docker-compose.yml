@@ -68,23 +68,6 @@ services:
       - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
- # Grafana - Graphical data visualization
-  grafana:
-    image: grafana/grafana:8.2.6
-    container_name: grafana
-    security_opt:
-      - no-new-privileges:true
-    restart: unless-stopped
-    networks:
-      - default
-    ports:
-      - "3000:3000"
-    user: $PUID
-    volumes:
-      #- $DOCKERDIR/appdata/grafana:/var/lib/grafana
-      - "grafana_data:/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/docker/"
-    environment:
-      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel,grafana-piechart-panel"
 
 volumes:
   zookeeper_data:
