@@ -30,7 +30,6 @@ class TweetPrinterV2(tweepy.StreamingClient):
     def on_data(self, data):
         # kafka_producer.send("trump", data['text']).get(timeout=1000)
         data = json.loads(data)
-
         # lang filter here
         if data['data']['lang'] == 'en':
             try:

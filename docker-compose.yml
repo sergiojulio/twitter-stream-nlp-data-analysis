@@ -77,3 +77,4 @@ volumes:
   grafana_data:
     driver: local
   postgres-data:  
+  # postgres persistente vulumen
