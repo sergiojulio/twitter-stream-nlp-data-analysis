@@ -9,6 +9,7 @@ import time
 import re
 from textblob import TextBlob
 
+
 def clean_tweet(tweet):
     stopwords = ["for", "on", "an", "a", "of", "and", "in", "the", "to", "from"]
     temp = tweet.lower()
