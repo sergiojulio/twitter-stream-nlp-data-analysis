@@ -8,6 +8,7 @@ RUN HOME=/usr/local/share/ python3 -m nltk.downloader vader_lexicon
 RUN chown -R ${spark_id}:${spark_id} /usr/local/share/
 USER ${spark_id}
 # HERE COPY 
+#
 # WORKDIR /src
 # COPY . .
 # Check https://stackoverflow.com/a/69559038/12382622
