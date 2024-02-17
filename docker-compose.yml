@@ -3,11 +3,12 @@ services:
   app:
     container_name: python-server
     build: 
-      context: ./docker/app/
+      context: ./ # specify context, this case root pah
+      dockerfile: ./docker/app/Dockerfile # location
     command: uvicorn src.main:app --host 0.0.0.0 --port 8080 --reload
     ports:
-      - 8080:8080
-      - 5678:5678
+      - 8080:8080 # fastapi
+      - 5678:5678 # streamlit
     volumes:
       - .:/code
   zookeeper:
@@ -39,7 +40,8 @@ services:
     container_name: spark-server
     image: docker.io/bitnami/spark:3.2
     build: 
-      context: ./docker/spark/
+      context: ./ # specify context, this case root pah
+      dockerfile: ./docker/spark/Dockerfile # location
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
@@ -48,7 +50,7 @@ services:
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
     ports:
-      - '8080:8080'
+      - '8081:8081'
   # spark-worker:
   #   # install python modules command: ?
   #   build: .
