@@ -20,15 +20,16 @@ app = FastAPI()
 @app.get("/")
 async def root():
 
-    bearer_token = os.getenv('BEARER_TOKEN')
 
      # init kafka
     """
-        producer = KafkaProducer(
-                    bootstrap_servers='localhost:9092', 
-                    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-                )   
+    bearer_token = os.getenv('BEARER_TOKEN')
+    producer = KafkaProducer(
+                bootstrap_servers='localhost:9092', 
+                value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            )   
     """ 
+    
     producer = KafkaProducer(bootstrap_servers='localhost:9092')  
     
 
@@ -81,7 +82,7 @@ async def root():
     # print(printer.get_rules())
     # printer.filter(tweet_fields="created_at,geo,id,lang,text")
     # init kafka
-    return {"message": "hi"}
+    return {"message": "finished"}
 
 
 @app.get("/token")

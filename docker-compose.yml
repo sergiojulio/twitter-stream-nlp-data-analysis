@@ -5,12 +5,12 @@ services:
     build: 
       context: ./ # specify context, this case root pah
       dockerfile: ./docker/app/Dockerfile # location
-    command: uvicorn src.main:app --host 0.0.0.0 --port 8080 --reload
+    command: uvicorn src.app.fastapi.main:app --host 0.0.0.0 --port 8080 --reload
     ports:
       - 8080:8080 # fastapi
       - 5678:5678 # streamlit
     volumes:
-      - .:/code
+      - ./:/app
   zookeeper:
     container_name: zookeeper-server
     image: docker.io/bitnami/zookeeper:3.8
@@ -68,6 +68,7 @@ services:
   postgres:
     container_name: postgres-server
     image: postgres:14.1-alpine
+    # build sql create table
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -77,6 +78,12 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 volumes:
+  app:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /app
   zookeeper_data:
     driver: local
   kafka_data:
