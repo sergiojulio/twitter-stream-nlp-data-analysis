@@ -10,7 +10,7 @@ services:
       - 8080:8080 # fastapi
       - 5678:5678 # streamlit
     volumes:
-      - ./:/app
+      - .:/code # add in preferences resources (workin directory)
   zookeeper:
     container_name: zookeeper-server
     image: docker.io/bitnami/zookeeper:3.8
@@ -80,10 +80,6 @@ services:
 volumes:
   app:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /app
   zookeeper_data:
     driver: local
   kafka_data:

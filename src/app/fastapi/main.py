@@ -30,11 +30,11 @@ async def root():
             )   
     """ 
     
-    producer = KafkaProducer(bootstrap_servers='localhost:9092')  
+    producer = KafkaProducer(bootstrap_servers='kafka:9092')  
     
 
     # with open csv
-    fname = "/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/app/twitter/tweets.csv"
+    fname = "/code/src/app/twitter/tweets.csv"
     divider_char = ','
     # open file
     with open(fname) as fp:  
@@ -88,3 +88,9 @@ async def root():
 @app.get("/token")
 async def root():
     return {"token": os.getenv('BEARER_TOKEN')}
+
+
+@app.get("/test")
+async def root():
+    producer = KafkaProducer(bootstrap_servers='kafka:9093')  
+    producer.send('trump', bytes('hola', encoding='utf-8'))
