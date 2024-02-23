@@ -92,5 +92,5 @@ async def root():
 
 @app.get("/test")
 async def root():
-    producer = KafkaProducer(bootstrap_servers='kafka:9093')  
+    producer = KafkaProducer(bootstrap_servers='kafka:9093')  # kafka debe venir del .env
     producer.send('trump', bytes('hola', encoding='utf-8'))
