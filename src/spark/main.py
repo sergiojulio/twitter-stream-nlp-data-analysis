@@ -61,6 +61,8 @@ def clean_text(sentence):
 
 
 if __name__ == "__main__":
+
+    # create database
         
     print("Stream Data Processing Starting ...")
     print(time.strftime("%Y-%m-%d %H:%M:%S"))

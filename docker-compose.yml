@@ -36,12 +36,14 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
+
+
   spark:
     container_name: spark-server
     image: docker.io/bitnami/spark:3.2
-    build: 
-      context: ./ # specify context, this case root pah
-      dockerfile: ./docker/spark/Dockerfile # location
+    # build: 
+    #   context: ./ # specify context, this case root pah
+    #   dockerfile: ./docker/spark/Dockerfile # location
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
@@ -51,33 +53,40 @@ services:
       - SPARK_USER=spark
     ports:
       - '8081:8081'
-  # spark-worker:
-  #   # install python modules command: ?
-  #   build: .
-  #   # image: docker.io/bitnami/spark:3.2
-  #   environment:
-  #     - SPARK_MODE=worker
-  #     - SPARK_MASTER_URL=spark://spark:7077
-  #     - SPARK_WORKER_MEMORY=1G
-  #     - SPARK_WORKER_CORES=1
-  #     - SPARK_RPC_AUTHENTICATION_ENABLED=no
-  #     - SPARK_RPC_ENCRYPTION_ENABLED=no
-  #     - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-  #     - SPARK_SSL_ENABLED=no
-  #     - SPARK_USER=spark
+    volumes:
+      - .:/code # add in preferences resources (workin directory)
+
+  spark-worker:
+    container_name: worker-server
+    # install python modules command: ?
+    build: 
+      context: ./ # specify context, this case root pah
+      dockerfile: ./docker/spark/Dockerfile # location
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+
+
   postgres:
     container_name: postgres-server
     image: postgres:14.1-alpine
-    # build sql create table
-    restart: always
+    #restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - '5432:5432'
-      # parameters for sql db init
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
+
 volumes:
   app:
     driver: local
@@ -86,4 +95,6 @@ volumes:
   kafka_data:
     driver: local
   postgres-data:  
+  spark:
+    driver: local
   # postgres persistente vulumen
