@@ -10,6 +10,8 @@ def main():
   spark,sc = init_spark()
   nums = sc.parallelize([1,2,3,4])
   print(nums.map(lambda x: x*x).collect())
+  print("Holi")
+  print(sc.getConf().getAll())
 
 
 if __name__ == '__main__':
