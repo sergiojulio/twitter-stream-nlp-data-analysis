@@ -14,5 +14,18 @@ def main():
   print(sc.getConf().getAll())
 
 
+  jdbcDF = spark.read \
+    .format("jdbc") \
+    .option("url", "jdbc:postgresql:postgres:5432") \
+    .option("user", "postgres") \
+    .option("password", "postgres") \
+    .load()
+  # Specifying create table column data types on write
+  jdbcDF.write \
+    .option("createTableColumnTypes", "name CHAR(64), comments VARCHAR(1024)") \
+    .jdbc("jdbc:postgresql:postgres:5432", "schema.postgres",
+          properties={"user": "postgres", "password": "postgres"})
+
+
 if __name__ == '__main__':
   main()
