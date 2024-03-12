@@ -21,7 +21,7 @@ services:
 
   spark-worker:
     container_name: worker-server
-    # install python modules command: ?
+    # install python modules command: ?ss
     build: 
       context: ./ # specify context, this case root pah
       dockerfile: ./docker/spark/Dockerfile # location
@@ -42,17 +42,24 @@ services:
     container_name: postgres-server
     image: postgres:14.1-alpine
     #restart: always
+    build: 
+      context: ./ # specify context, this case root pah
     environment:
+      - POSTGRES_DB=postgres_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_ROOT_PASSWORD=root
     ports:
       - '5432:5432'
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      #- postgres-data:/var/lib/postgresql/data
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 
 volumes:
-  postgres-data:  
+  postgres:  
+    driver: local
   spark:
     driver: local
   # postgres persistente vulumen
