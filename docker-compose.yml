@@ -1,5 +1,78 @@
 version: "3.1"
 services:
+  app:
+    container_name: python-server
+    build: 
+      context: ./ # specify context, this case root pah
+      dockerfile: ./docker/app/Dockerfile # location
+    command: uvicorn src.app.fastapi.main:app --host 0.0.0.0 --port 8080 --reload
+    ports:
+      - 8080:8080 # fastapi
+      - 5678:5678 # streamlit
+    volumes:
+      - .:/code # add in preferences resources (workin directory)
+  zookeeper:
+    container_name: zookeeper-server
+    image: docker.io/bitnami/zookeeper:3.8
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    container_name: kafka-server
+    image: docker.io/bitnami/kafka:3.4
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9093,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9093,EXTERNAL://localhost:9092
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+
+
+  spark:
+    container_name: spark-server
+    image: docker.io/bitnami/spark:3.2
+    # build: 
+    #   context: ./ # specify context, this case root pah
+    #   dockerfile: ./docker/spark/Dockerfile # location
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    ports:
+      - '8081:8081'
+    volumes:
+      - .:/code # add in preferences resources (workin directory)
+
+  spark-worker:
+    container_name: worker-server
+    # install python modules command: ?
+    build: 
+      context: ./ # specify context, this case root pah
+      dockerfile: ./docker/spark/Dockerfile # location
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+
 
   postgres:
     container_name: postgres-server
@@ -10,7 +83,7 @@ services:
     environment:
       - POSTGRES_DB=postgres_db
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgress
+      - POSTGRES_PASSWORD=postgres
       - POSTGRES_ROOT_PASSWORD=root
     ports:
       - '5432:5432'
@@ -19,6 +92,15 @@ services:
       - ./postgres/data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+
 volumes:
-  postgres:  
+  app:
     driver: local
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  postgres-data:  
+  spark:
+    driver: local
+  # postgres persistente vulumen

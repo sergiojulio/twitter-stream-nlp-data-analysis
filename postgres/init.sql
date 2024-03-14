@@ -1,8 +1,9 @@
 -- create role table
-CREATE TABLE IF NOT EXISTS ROLE (
+CREATE TABLE IF NOT EXISTS stream (
     id INT PRIMARY KEY,
-    name VARCHAR(10)
+    ts TIMESTAMP,
+    polarity INT
 );
 
 -- insert initial default roles
-INSERT INTO ROLE (id,name) VALUES (0,'USER'),(1,'ADMIN'); 
+--INSERT INTO ROLE (id,name) VALUES (0,'USER'),(1,'ADMIN'),(2,'SLAVE'); 
