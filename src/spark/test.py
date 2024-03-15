@@ -24,8 +24,8 @@ def main():
       .format("jdbc") \
       .option("url", "jdbc:postgresql://postgres:5432/postgres_db") \
       .option("dbtable", "stream") \
-      .option("user", "postgresql") \
-      .option("password", "postgresql") \
+      .option("user", "postgres") \
+      .option("password", "postgres") \
       .option("driver", "org.postgresql.Driver") \
       .load()
 
