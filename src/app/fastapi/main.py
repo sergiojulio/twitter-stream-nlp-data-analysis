@@ -30,7 +30,7 @@ async def root():
             )   
     """ 
     
-    producer = KafkaProducer(bootstrap_servers='kafka:9092')  
+    producer = KafkaProducer(bootstrap_servers='kafka:9093')  
     
 
     # with open csv

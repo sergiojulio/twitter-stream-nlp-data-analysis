@@ -86,7 +86,7 @@ if __name__ == "__main__":
     streamdf = spark \
         .readStream \
         .format("kafka") \
-        .option("kafka.bootstrap.servers", "localhost:9092") \
+        .option("kafka.bootstrap.servers", "kafka:9092") \
         .option("subscribe", "trump") \
         .option("startingOffsets", "latest") \
         .load() 
