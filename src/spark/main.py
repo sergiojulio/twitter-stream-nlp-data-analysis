@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import split
 from pyspark.sql.functions import window
-from pyspark.sql.types import TimestampType, StringType, IntegerType
+from pyspark.sql.types import TimestampType, StringType, IntegerType, StructType, StructField
 import pyspark.sql.functions as F
 from pyspark.sql.functions import udf
 import time
@@ -29,16 +29,18 @@ def clean_tweet(tweet):
 
 def write_to_pgsql(df, epoch_id):
     
-    df.show()
-    print('hi')
+    #df.show()
+    #print('hi')
     pass
-
+    """
     df.write.format('jdbc').options(
     url='jdbc:%s' % url,
     driver='org.postgresql.Driver',
     dbtable='pyspark_user',
     user='postgres',
-    password='').mode('append').save()
+    password='').mode('append').save()    
+    """
+
 
 
 def myFunction(string):
@@ -67,6 +69,22 @@ def clean_text(sentence):
     return sentence.strip()
 
 
+def init_spark():
+
+  """
+  conf = pyspark.SparkConf().setAppName('MyApp').setMaster('spark://spark-master:7077')
+  sc = pyspark.SparkContext(conf=conf)
+  """
+
+  spark = SparkSession.builder.appName("HelloWorld").master('spark://spark:7077').getOrCreate()
+  sc = spark.sparkContext
+  return spark,sc
+
+  """
+  Without spark action APIs(collect/take/first/saveAsTextFile) nothing will be executed on executors. 
+  Its not possible to distribute plain python code just by submitting to spark. 
+  """
+
 
 if __name__ == "__main__":
 
@@ -76,17 +94,22 @@ if __name__ == "__main__":
     print(time.strftime("%Y-%m-%d %H:%M:%S"))
 
 
+    spark,sc = init_spark()
+
+    """
     spark = SparkSession \
-        .appName("StructuredNetworkWordCount") \
-        .master("local[*]") \
-        .getOrCreate()
+    .appName("StructuredNetworkWordCount") \
+    .master("local[*]") \
+    .getOrCreate()
+    """
+
 
     spark.sparkContext.setLogLevel("ERROR")
 
     streamdf = spark \
         .readStream \
         .format("kafka") \
-        .option("kafka.bootstrap.servers", "kafka:9092") \
+        .option("kafka.bootstrap.servers", "kafka:9093") \
         .option("subscribe", "trump") \
         .option("startingOffsets", "latest") \
         .load() 
@@ -96,16 +119,18 @@ if __name__ == "__main__":
     streamdf.printSchema()
 
     schema = StructType([
-        StructField("time", TimestampType()),
+        StructField("tweet_created", TimestampType()),
         StructField("text", StringType())
     ])
 
     udf_myFunction = udf(myFunction, StringType()) # if the function returns an int
 
+    # NO SE QUE ES ESTO!!!!
+
     streamdf = streamdf.selectExpr("CAST(value AS STRING)") \
             .select(F.from_json("value", schema=schema).alias("data")) \
             .select("data.*") \
-            .withColumn("newlyCalculatedColumnName", F.lit("npl"))
+            .withColumn("sentiment", F.lit("npl"))
 
     # output
 

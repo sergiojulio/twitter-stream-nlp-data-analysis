@@ -8,7 +8,7 @@ def init_spark():
   sc = pyspark.SparkContext(conf=conf)
   """
 
-  spark = SparkSession.builder.appName("HelloWorld").mster('spark://spark-master:7077').getOrCreate()
+  spark = SparkSession.builder.appName("HelloWorld").master('spark://spark:7077').getOrCreate()
   sc = spark.sparkContext
   return spark,sc
 

@@ -49,18 +49,36 @@ async def root():
             values = line.split(divider_char)
             len_header = len(header)
             for i in range(len_header):
-
+                # this does not works! json comes with errors!
                 try:
                     data_to_send += "\""+header[i].strip()+"\""+":"+"\""+values[i].strip()+"\""
                     if i<len_header-1 :
                         data_to_send += ","
                 except IndexError:
                     pass    
-
+                # end suckd
             data_to_send = "{"+data_to_send+"}"
 
             """
-            {"tweet_id":"570306133677760513","airline_sentiment":"neutral","airline_sentiment_confidence":"1.0","negativereason":"","negativereason_confidence":"","airline":"Virgin America","airline_sentiment_gold":"","name":"cairdin","negativereason_gold":"","retweet_count":"0","text":"@VirginAmerica What @dhepburn said.","tweet_coord":"","tweet_created":"2015-02-24 11:35:52 -0800","tweet_location":"","user_timezone":"Eastern Time (US & Canada)"}
+            {
+            "tweet_id":"570306133677760513",
+            "airline_sentiment":"neutral",
+            "airline_sentiment_confidence":"1.0",
+            "negativereason":"",
+            "negativereason_confidence":"",
+            "airline":"Virgin America",
+            "airline_sentiment_gold":"",
+            "name":"cairdin",
+            "negativereason_gold":"",
+            "retweet_count":"0",
+
+            "text":"@VirginAmerica What @dhepburn said.",
+
+            "tweet_coord":"",
+            "tweet_created":"2015-02-24 11:35:52 -0800",
+            "tweet_location":"",
+            "user_timezone":"Eastern Time (US & Canada)"
+            }
 
             """
 
