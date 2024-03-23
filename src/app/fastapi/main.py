@@ -34,59 +34,42 @@ async def root():
     
 
     # with open csv
-    fname = "/code/src/app/twitter/tweets.csv"
-    divider_char = ','
-    # open file
-    with open(fname) as fp:  
-        # read header (first line of the input file)
-        line = fp.readline()
-        header = line.split(divider_char)
-        #loop other data rows 
-        line = fp.readline()    
-        while line:
-            # start to prepare data row to send
-            data_to_send = ""
-            values = line.split(divider_char)
-            len_header = len(header)
-            for i in range(len_header):
-                # this does not works! json comes with errors!
-                try:
-                    data_to_send += "\""+header[i].strip()+"\""+":"+"\""+values[i].strip()+"\""
-                    if i<len_header-1 :
-                        data_to_send += ","
-                except IndexError:
-                    pass    
-                # end suckd
-            data_to_send = "{"+data_to_send+"}"
+    csvfile = open("/code/src/app/twitter/tweets.csv","r")
+    # csvfile = open("/home/sergio/dev/docker/twitter-stream-nlp-data-analysis/src/app/twitter/tweets.csv","r")
 
-            """
-            {
-            "tweet_id":"570306133677760513",
-            "airline_sentiment":"neutral",
-            "airline_sentiment_confidence":"1.0",
-            "negativereason":"",
-            "negativereason_confidence":"",
-            "airline":"Virgin America",
-            "airline_sentiment_gold":"",
-            "name":"cairdin",
-            "negativereason_gold":"",
-            "retweet_count":"0",
+    reader = csv.DictReader(csvfile)
+    for row in reader:
 
-            "text":"@VirginAmerica What @dhepburn said.",
+        data_to_send = json.dumps(row) 
 
-            "tweet_coord":"",
-            "tweet_created":"2015-02-24 11:35:52 -0800",
-            "tweet_location":"",
-            "user_timezone":"Eastern Time (US & Canada)"
-            }
+        """
+        {"tweet_id": "569281033365037056", 
+        "airline_sentiment": "negative", 
+        "airline_sentiment_confidence": "1.0", 
+        "negativereason": "Lost Luggage", 
+        "negativereason_confidence": "0.6882", 
+        "airline": "United", 
+        "airline_sentiment_gold": "", 
+        "name": "hannahcbeck", 
+        "negativereason_gold": "", 
+        "retweet_count": "1", 
+        "text": "@united No customer service rep could confirm where my bag was &amp; each gave me different info. Ruined 2 events I had today. #disappointed", 
+        "tweet_coord": "[35.00096266, -80.87374938]", 
+        "tweet_created": "2015-02-21 15:42:29 -0800", 
+        "tweet_location": "Hoboken, NJ", 
+        "user_timezone": "Eastern Time (US & Canada)"}
+        """
 
-            """
+        #print(data_to_send)
 
-            # send data via producer
-            producer.send('trump', bytes(data_to_send, encoding='utf-8'))
-            line = fp.readline()
-            # 
-            time.sleep(1)
+        # send data via producer
+        producer.send('trump', bytes(data_to_send, encoding='utf-8'))
+        # 
+        time.sleep(1)
+
+
+
+
 
     producer.close()
     # init twitter 

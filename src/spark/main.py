@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import split
 from pyspark.sql.functions import window
-from pyspark.sql.types import TimestampType, StringType, IntegerType, StructType, StructField
+from pyspark.sql.types import TimestampType, StringType, FloatType, StructType, StructField
 import pyspark.sql.functions as F
 from pyspark.sql.functions import udf
 import time
@@ -28,19 +28,17 @@ def clean_tweet(tweet):
 # os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.0,org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 pyspark-shell'
 
 def write_to_pgsql(df, epoch_id):
-    
-    #df.show()
-    #print('hi')
-    pass
-    """
-    df.write.format('jdbc').options(
-    url='jdbc:%s' % url,
-    driver='org.postgresql.Driver',
-    dbtable='pyspark_user',
-    user='postgres',
-    password='').mode('append').save()    
-    """
 
+    df.write \
+    .format('jdbc') \
+    .options(url="jdbc:postgresql://postgres:5432/postgres_db",
+            driver="org.postgresql.Driver",
+            dbtable="stream",
+            user="postgres",
+            password="postgres",
+            ) \
+    .mode('append') \
+    .save()
 
 
 def myFunction(string):
@@ -51,7 +49,7 @@ def myFunction(string):
     c = 0
     i = 0
     for sentence in blob.sentences:
-        print(sentence.sentiment.polarity)
+        #print(sentence.sentiment.polarity)
         c = sentence.sentiment.polarity  + c
         i += 1
 
@@ -61,22 +59,24 @@ def myFunction(string):
     return p
 
 
-def clean_text(sentence):
-    sentence = sentence.lower()
-    sentence = re.sub("s+"," ", sentence)
-    sentence = re.sub("W"," ", sentence)
-    sentence = re.sub(r"httpS+", "", sentence)
-    return sentence.strip()
-
 
 def init_spark():
 
   """
   conf = pyspark.SparkConf().setAppName('MyApp').setMaster('spark://spark-master:7077')
   sc = pyspark.SparkContext(conf=conf)
+    #.config("spark.jars", "/code/src/spark/postgresql-42.6.2.jar") \
+
   """
 
-  spark = SparkSession.builder.appName("HelloWorld").master('spark://spark:7077').getOrCreate()
+  spark = SparkSession \
+    .builder \
+    .appName("twitter-stream-nlp-data-analysis") \
+    .master('spark://spark:7077') \
+    .getOrCreate()
+  
+  spark.sparkContext.setLogLevel("ERROR")
+
   sc = spark.sparkContext
   return spark,sc
 
@@ -88,23 +88,12 @@ def init_spark():
 
 if __name__ == "__main__":
 
-    # create database
-        
     print("Stream Data Processing Starting ...")
     print(time.strftime("%Y-%m-%d %H:%M:%S"))
 
-
     spark,sc = init_spark()
 
-    """
-    spark = SparkSession \
-    .appName("StructuredNetworkWordCount") \
-    .master("local[*]") \
-    .getOrCreate()
-    """
-
-
-    spark.sparkContext.setLogLevel("ERROR")
+    
 
     streamdf = spark \
         .readStream \
@@ -114,7 +103,7 @@ if __name__ == "__main__":
         .option("startingOffsets", "latest") \
         .load() 
     
-    print("Printing Schema of orders_df: ")
+    print("Printing Schema:")
 
     streamdf.printSchema()
 
@@ -123,14 +112,13 @@ if __name__ == "__main__":
         StructField("text", StringType())
     ])
 
-    udf_myFunction = udf(myFunction, StringType()) # if the function returns an int
+    udf_myFunction = udf(myFunction, FloatType()) # if the function returns an int
 
-    # NO SE QUE ES ESTO!!!!
 
     streamdf = streamdf.selectExpr("CAST(value AS STRING)") \
             .select(F.from_json("value", schema=schema).alias("data")) \
             .select("data.*") \
-            .withColumn("sentiment", F.lit("npl"))
+            .withColumn("polarity", udf_myFunction(F.col("text")))
 
     # output
 

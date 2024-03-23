@@ -28,7 +28,7 @@ def main():
    spark = SparkSession \
       .builder \
       .appName("Python Spark SQL basic example") \
-      .config("spark.jars", "/code/src/spark/postgresql-42.6.2jar") \
+      .config("spark.jars", "c") \
       .getOrCreate()
 
   df = spark.read \

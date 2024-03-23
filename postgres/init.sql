@@ -1,8 +1,8 @@
 -- create role table
 CREATE TABLE IF NOT EXISTS stream (
-    id INT PRIMARY KEY,
-    ts TIMESTAMP,
-    polarity INT
+    tweet_created TIMESTAMP,
+    "text" TEXT,
+    polarity REAL
 );
 
 -- insert initial default roles
