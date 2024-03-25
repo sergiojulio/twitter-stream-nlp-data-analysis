@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 # import kafka
-from kafka import KafkaConsumer, KafkaProducer
+from kafka import KafkaProducer
 from src.app.twitter.twitterapi import Twitterapi
 import json
 import time,csv
@@ -66,9 +66,6 @@ async def root():
         producer.send('trump', bytes(data_to_send, encoding='utf-8'))
         # 
         time.sleep(1)
-
-
-
 
 
     producer.close()

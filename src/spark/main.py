@@ -138,7 +138,7 @@ if __name__ == "__main__":
         .writeStream  \
         .trigger(processingTime='5 seconds') \
         .outputMode("update")  \
-        .option("truncate", "false")\
+        .option("truncate", "true")\
         .format("console") \
         .start() 
         #.awaitTermination()

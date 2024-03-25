@@ -130,3 +130,6 @@ dmypy.json
 
 src/nltk_data
 src/twitter/tweets.csv
+
+src/app/streamlit/.streamlit/secrets.toml
+src/app/streamlit/.streamlit/

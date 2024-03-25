@@ -5,5 +5,3 @@ CREATE TABLE IF NOT EXISTS stream (
     polarity REAL
 );
 
--- insert initial default roles
---INSERT INTO ROLE (id,name) VALUES (0,'USER'),(1,'ADMIN'),(2,'SLAVE'); 
